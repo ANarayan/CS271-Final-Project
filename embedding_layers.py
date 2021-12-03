@@ -11,3 +11,6 @@ def Conv1DEmbed(d_input, d_model, kernel_size):
 
 def LinearEmbed(d_input, d_model):
     return Dense(d_model)
+
+
+EMBEDDING_REGISRY = {"conv1d": Conv1DEmbed, "linear": LinearEmbed}

@@ -33,3 +33,11 @@ class TransformerBlock(layers.Layer):
 
 def LSTMEncoder(d_model, **kwargs):
     return LSTM(units=d_model, **kwargs)
+
+
+def TransformerEncoder(d_model, num_heads, ff_dim, rate, **kwargs):
+    transformer = TransformerBlock(d_model, num_heads, ff_dim, rate)
+    return transformer
+
+
+ENCODER_REGISTRY = {"lstm": LSTMEncoder, "transformer": TransformerEncoder}

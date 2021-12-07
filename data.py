@@ -104,16 +104,16 @@ def load_data(path_to_data):
 
     dataset_train = (
         tf.transpose(tf.convert_to_tensor(X_train, dtype=tf.float32), perm=[0, 2, 1]),
-        tf.convert_to_tensor(y_train),
+        tf.convert_to_tensor(y_train, dtype=tf.float32),
     )
 
     dataset_val = (
         tf.transpose(tf.convert_to_tensor(X_val, dtype=tf.float32), perm=[0, 2, 1]),
-        tf.convert_to_tensor(y_val),
+        tf.convert_to_tensor(y_val, dtype=tf.float32),
     )
     dataset_test = (
         tf.transpose(tf.convert_to_tensor(X_test, dtype=tf.float32), perm=[0, 2, 1]),
-        tf.convert_to_tensor(y_test),
+        tf.convert_to_tensor(y_test, dtype=tf.float32),
     )
 
     return dataset_train, dataset_val, dataset_test

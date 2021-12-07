@@ -16,19 +16,21 @@ d_input = 12 # number of channels in input
 max_len = 1000
 d_model = 256
 data_dir = "/juice/scr/avanika/unagi/physionet.org/files/ptb-xl/1.0.1/"
-embedding_layer = "linear"
-encoder_layer = "lstm"
+embedding_layer = "conv1d"
+encoder_layer = "transformer"
 kernel_size=4
 num_classes=5
 num_heads = 6
 ff_dim = 128
 rate=0.1
+patch_size=1
 
 
 EMBED_PARAMS = {
     'd_input' : d_input,
     'd_model' : d_model,
-    'kernel_size': kernel_size
+    'kernel_size': kernel_size,
+    'patch_size': patch_size
 }
 
 ENCODER_PARAMS = {
@@ -41,7 +43,6 @@ ENCODER_PARAMS = {
 }
 
 """train_data, val_data, test_data = load_data(data_dir)
-breakpoint()
 pickle.dump(train_data, open("train_data.pkl", "wb"))
 pickle.dump(test_data, open("test_data.pkl", "wb"))
 pickle.dump(val_data, open("val_data.pkl", "wb"))"""
@@ -55,7 +56,7 @@ x_val, y_val =  val_data[0], val_data[1]
 x_test, y_test = test_data[0], test_data[1]
 
 
-inputs = layers.Input(shape=(d_input,max_len, ))
+"""inputs = layers.Input(shape=(d_input,max_len, ))
 embed_layer = EMBEDDING_REGISTRY[embedding_layer](**EMBED_PARAMS)
 encoder_layer = ENCODER_REGISTRY[encoder_layer](**ENCODER_PARAMS)
 avg_pool_layer = layers.GlobalAveragePooling1D()
@@ -68,9 +69,21 @@ x = avg_pool_layer(x)
 x = dropout_layer(x)
 outputs = prediction_layer(x)
 
-model = keras.Model(inputs=inputs, outputs=outputs)
+model = keras.Model(inputs=inputs, outputs=outputs)"""
 
-model.compile(optimizer="adam", loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=["accuracy"])
+model = keras.Sequential([
+    layers.Input(shape=(d_input,max_len, )),
+    EMBEDDING_REGISTRY[embedding_layer](**EMBED_PARAMS),
+    ENCODER_REGISTRY[encoder_layer](**ENCODER_PARAMS),
+    layers.GlobalAveragePooling1D(),
+    layers.Dropout(0.1),
+    layers.Dense(num_classes, activation="softmax")
+    ])
+
+print("here")
+print(model.summary())
+
+model.compile(optimizer="adam", loss=tf.keras.losses.SparseCategoricalCrossentropy(), metrics=["accuracy"])
 history = model.fit(
     x_train, y_train, batch_size=128, epochs=50, validation_data=(x_val, y_val)
 )

@@ -1,16 +1,20 @@
-from keras.layers import (
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras.layers import (
     Dense,
     Conv1D,
 )
 from einops import rearrange
+from tensorflow import keras
 
 
 
-class LinearEmbed:
+class LinearEmbed(keras.layers.Layer):
     def __init__(
         self,
         d_input,
         d_model,
+        kernel_size,
     ):
         """
         input: (B, C, S)
@@ -20,15 +24,18 @@ class LinearEmbed:
         self.d_input = d_input
         self.emb = Dense(d_model)
 
-    def forward(self, x):
-        b, c, s = x.size()
+    def call(self, x):
+        b, c, s = tf.shape(x)[0], tf.shape(x)[1], tf.shape(x)[2]
         # assert c == self.d_input, f"Patchsize expected {self.d_input}
         # channels got {c} channels"
-        x = x.view(b, c * s // self.d_input, 1)
+        print(tf.shape(x)[0])
+        print(tf.shape(x)[1])
+        print(tf.shape(x)[2])
+        x = tf.reshape(x, [b, c * s // self.d_input, 1])
         return self.emb(x)
     
     
-class Conv1DEmbed:
+class Conv1DEmbed(keras.layers.Layer):
     def __init__(self, d_input, d_model, kernel_size):
         """
         input: (B, C, S)
@@ -36,7 +43,7 @@ class Conv1DEmbed:
       
         self.emb = Conv1D(filters=d_model, kernel_size=kernel_size)
 
-    def forward(self, x):
+    def call(self, x):
         return rearrange(self.emb(x), "b c s -> b s c")
 
 

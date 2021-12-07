@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from keras.layers import LSTM
+from tensorflow.keras.layers import LSTM
 import tensorflow_addons as tfa
 
 
@@ -49,8 +49,8 @@ class MLP(layers.Layer):
         return self.mlp(inputs)
 
 
-def LSTMEncoder(d_model, **kwargs):
-    return LSTM(units=d_model, **kwargs)
+def LSTMEncoder(d_model, activation="tanh", dropout=0.1,**kwargs):
+    return LSTM(units=d_model, activation=activation, dropout=dropout, return_sequences=True)
 
 
 def TransformerEncoder(d_model, num_heads, ff_dim, rate, **kwargs):

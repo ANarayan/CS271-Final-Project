@@ -44,6 +44,7 @@ class Conv1DEmbed(keras.layers.Layer):
         self.emb = Conv1D(filters=d_model, kernel_size=kernel_size, strides=2)
 
     def call(self, x):
+        x = tf.transpose(x, perm=[0,2,1])
         x = self.emb(x)
         print(x.shape)
         return x

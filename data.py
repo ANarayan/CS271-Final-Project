@@ -103,16 +103,16 @@ def load_data(path_to_data):
     X_train, X_val, X_test = preprocess_signals(X_train, X_val, X_test)
 
     dataset_train = (
-        tf.convert_to_tensor(X_train, dtype=tf.float32),
+        tf.transpose(tf.convert_to_tensor(X_train, dtype=tf.float32), perm=[0, 2, 1]),
         tf.convert_to_tensor(y_train),
     )
 
     dataset_val = (
-        tf.convert_to_tensor(X_val, dtype=tf.float32),
+        tf.transpose(tf.convert_to_tensor(X_val, dtype=tf.float32), perm=[0, 2, 1]),
         tf.convert_to_tensor(y_val),
     )
     dataset_test = (
-        tf.convert_to_tensor(X_test, dtype=tf.float32),
+        tf.transpose(tf.convert_to_tensor(X_test, dtype=tf.float32), perm=[0, 2, 1]),
         tf.convert_to_tensor(y_test),
     )
 
